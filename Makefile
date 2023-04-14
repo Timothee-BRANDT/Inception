@@ -1,10 +1,10 @@
 #!/bin/bash
 
 all: volumes
-	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up --detach
+	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up -d
 
 build: volumes
-	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up --detach --build
+	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env up -d --build
 
 stop: 
 	@docker-compose -f srcs/docker-compose.yml --env-file srcs/.env stop
