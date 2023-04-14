@@ -17,7 +17,6 @@ RUN apk update && apk upgrade && apk add --no-cache \
     php8-zip \
     wget \
     unzip && \
-    # PHP-FPM process will now listen on port 9000 on all available network interfaces for incoming FastCGI requests
     sed -i "s/listen = 127.0.0.1:9000/listen = 9000/g" /etc/php8/php-fpm.d/www.conf
 
 WORKDIR /var/www
@@ -28,5 +27,4 @@ COPY conf/wp.sh .
 
 RUN sh wp.sh && rm wp.sh && chmod -R 0777 wp-content/
 
-# Start PHP-FPM in foreground
 CMD ["php-fpm8", "--nodaemonize"]
