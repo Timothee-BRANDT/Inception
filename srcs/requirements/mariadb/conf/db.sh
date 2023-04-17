@@ -2,7 +2,7 @@
 
 if [ ! -d "/var/run/mysqld" ]; then
         mkdir -p /var/run/mysqld
-        chown -R mysql:mysql /var/run/mysqld
+        chown -R mysql:mysql /var/run/mysqld # define user and group owner in mysql:mysql
 fi
 
 if [ ! -d "/etc/my.cnf.d" ]; then
@@ -14,14 +14,15 @@ echo '[mysqld]' > /etc/my.cnf.d/docker.cnf
 # skip cache for performances issue
 echo 'skip-host-cache' >> /etc/my.cnf.d/docker.cnf
 echo 'skip-name-resolve' >> /etc/my.cnf.d/docker.cnf
+# allow users to log into the DB by listening all network
 echo 'bind-address=0.0.0.0' >> /etc/my.cnf.d/docker.cnf
-# allow users to log into the DB
 sed -i "s/skip-networking/skip-networking=0/g" /etc/my.cnf.d/mariadb-server.cnf
 
 
+# 
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-        chown -R mysql:mysql /var/lib/mysql
-        mysql_install_db --user=mysql --datadir=/var/lib/mysql --basedir=/usr --rpm
+        chown -R mysql:mysql /var/lib/mysql # allow mysql user to read and write in the DB
+        mysql_install_db --user=mysql --datadir=/var/lib/mysql --basedir=/usr --rpm # RPM packages
         tempfile=`mktemp`
         if [ ! -f "$tempfile" ]; then
                 return 1
@@ -44,6 +45,6 @@ CREATE USER '$MYSQL_USER'@'%' IDENTIFIED by '$MYSQL_PASSWORD';
 GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
 FLUSH PRIVILEGES;
 EOF
-        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql
+        /usr/bin/mysqld --user=mysql --bootstrap < /tmp/create_db.sql # bootstrap is used to run SQL commands at the booting of the container
         rm -f /tmp/create_db.sql
 fi

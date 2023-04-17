@@ -13,4 +13,5 @@ RUN sh db.sh && rm db.sh
 # Set the default user to the 'mysql' user to reduce the risk of security vulnerabilities
 USER mysql
 
+# run the mysql command that start the server MariaDB
 CMD ["mysqld"]

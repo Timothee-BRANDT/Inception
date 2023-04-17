@@ -25,6 +25,7 @@ RUN wget https://wordpress.org/latest.zip && unzip latest.zip && cp -rf wordpres
 
 COPY conf/wp.sh .
 
+# allow wordpress to write in wp-content folder
 RUN sh wp.sh && rm wp.sh && chmod -R 0777 wp-content/
 
 CMD ["php-fpm8", "--nodaemonize"]
